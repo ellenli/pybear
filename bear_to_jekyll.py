@@ -60,6 +60,8 @@ title: {}
 date: {}
 tags: {}
 uuid: {}
+layout: default
+category: blog
 ---
 {}""".format(note.title, note.created.strftime('%Y-%m-%d %H:%M:%S +0000'), ' '.join([t.title for t in note.tags()]), note.id, note.text))
 
