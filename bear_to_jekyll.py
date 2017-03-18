@@ -12,6 +12,8 @@ def title_to_filename(path, title, date):
     We build a simple filename from the title - i.e. "These Cats" becomes "these_cats.md". We do
     not check for existence, as we may be doing an overwrite deliberately.
     """
+    
+    title = re.sub('[`~!@#$%^&*():;"<>,./?]', '', title)
     name = date + "-" + re.sub(r'[^a-z0-9]','_',title.lower())
     return os.path.join(path, name)
 
