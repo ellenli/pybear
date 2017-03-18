@@ -1,6 +1,3 @@
-"""
-I really wanted to call this "inthewoods.py" but it seemed likely to cause confusion.
-"""
 import argparse
 import os.path, os
 import re
@@ -10,13 +7,12 @@ import bear
 import sys
 
 
-def title_to_filename(path, title):
+def title_to_filename(path, title, date):
     """
     We build a simple filename from the title - i.e. "These Cats" becomes "these_cats.md". We do
     not check for existence, as we may be doing an overwrite deliberately.
     """
-
-    name = re.sub(r'[^a-z0-9]','_',title.lower())
+    name = date + "-" + re.sub(r'[^a-z0-9]','_',title.lower())
     return os.path.join(path, name)
 
 
@@ -54,18 +50,18 @@ if __name__ == "__main__":
     # Iterate through all notes
     for note in notes:
         # Create a suitable filename
-        filename = title_to_filename(full_path, note.title) + '.md'
+        filename = title_to_filename(full_path, note.title, note.created.strftime('%Y-%m-%d')) + '.md'
 
         # Write out the post
         with open(filename, 'w', encoding = 'utf8') as f:
 
             f.write("""---
-    title: {}
-    date: {}
-    tags: {}
-    uuid: {}
-    ---
-    {}""".format(note.title, note.created.strftime('%Y-%m-%d %H:%M:%S +0000'), ' '.join([t.title for t in note.tags()]), note.id, note.text))
+title: {}
+date: {}
+tags: {}
+uuid: {}
+---
+{}""".format(note.title, note.created.strftime('%Y-%m-%d %H:%M:%S +0000'), ' '.join([t.title for t in note.tags()]), note.id, note.text))
 
             # Images to copy
             for image in note.images():
@@ -76,5 +72,3 @@ if __name__ == "__main__":
                     os.makedirs(os.path.dirname(target_path), exist_ok = True)
                     # Copy file
                     shutil.copyfile(image.path, target_path)
-
-
