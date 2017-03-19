@@ -54,6 +54,8 @@ if __name__ == "__main__":
         # Create a suitable filename
         filename = title_to_filename(full_path, note.title, note.created.strftime('%Y-%m-%d')) + '.md'
         note.text = '\n'.join(note.text.split('\n')[1:])
+        note.text = re.sub(r'\[image:', r'![](assets/posts/', note.text)
+        note.text = re.sub(r'.png]', r'.png)', note.text) # supports .png only - add formats as needed
 
         # Write out the post
         with open(filename, 'w', encoding = 'utf8') as f:
@@ -72,7 +74,8 @@ category: blog
             for image in note.images():
                 if image.exists():
                     # Figure out target path for image
-                    target_path = os.path.join(full_path, image.uri)
+                    post_path = os.path.join(full_path, image.uri)
+                    target_path = post_path.replace("/_posts", "/assets/posts", 1)
                     # Make dir
                     os.makedirs(os.path.dirname(target_path), exist_ok = True)
                     # Copy file
