@@ -59,6 +59,23 @@ if __name__ == "__main__":
         note.text = re.sub(r'.png]', r'.png)', note.text) # supports .png only - add formats as needed
         note.text = re.sub(r'\n#public.*', r'', note.text) # removes all lines that begin with #public
 
+        # hacky converter for [[note title]] links
+        # changes them to <a href="note link">note title</a>
+        # it removes some special characters from the URL
+        note.text = re.sub(r'(\[+)(.+)(]])', r'<a href="{{ "\2" | replace: " ", "_" | remove: "(" | remove: ")" | remove: "~" | remove: "!" | remove: "@" | remove: "#" | remove: "$" | remove: "&" | remove: ":" | remove: ";" | remove: "?" | remove: "," | remove: "." | downcase }}">\2</a>', note.text)
+
+        for f in re.findall("](.)", note.text):
+            note.text = note.text.replace(f, f.lower())
+        # note.text = re.sub(r'()', lowe)
+
+        # <crosssell id="123" selltype="456">
+
+        #               ?(\.[^\.]*)$
+        # re.sub(r'(\_a)?\.([^\.]*)$' , r'_suff.\2',"long.file.name.jpg")
+
+        # <a href="https://github.com/bhardin/spotthevuln/blob/gh-pages/_posts/{{ page.date | date: "%Y-%m-%d" }}-{{ page.title | remove: " -" | replace: " ", "-" | downcase }}.md"
+
+
         # Write out the post
         with open(filename, 'w', encoding = 'utf8') as f:
 
