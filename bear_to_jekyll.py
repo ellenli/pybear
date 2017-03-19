@@ -53,9 +53,11 @@ if __name__ == "__main__":
     for note in notes:
         # Create a suitable filename
         filename = title_to_filename(full_path, note.title, note.created.strftime('%Y-%m-%d')) + '.md'
+
         note.text = '\n'.join(note.text.split('\n')[1:])
         note.text = re.sub(r'\[image:', r'![](assets/posts/', note.text)
         note.text = re.sub(r'.png]', r'.png)', note.text) # supports .png only - add formats as needed
+        note.text = re.sub(r'\n#public.*', r'', note.text) # removes all lines that begin with #public
 
         # Write out the post
         with open(filename, 'w', encoding = 'utf8') as f:
