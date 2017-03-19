@@ -12,7 +12,7 @@ def title_to_filename(path, title, date):
     We build a simple filename from the title - i.e. "These Cats" becomes "these_cats.md". We do
     not check for existence, as we may be doing an overwrite deliberately.
     """
-    
+
     title = re.sub('[`~!@#$%^&*():;"<>,./?]', '', title)
     name = date + "-" + re.sub(r'[^a-z0-9]','_',title.lower())
     return os.path.join(path, name)
@@ -53,6 +53,7 @@ if __name__ == "__main__":
     for note in notes:
         # Create a suitable filename
         filename = title_to_filename(full_path, note.title, note.created.strftime('%Y-%m-%d')) + '.md'
+        note.text = '\n'.join(note.text.split('\n')[1:])
 
         # Write out the post
         with open(filename, 'w', encoding = 'utf8') as f:
@@ -60,12 +61,12 @@ if __name__ == "__main__":
             f.write("""---
 title: {}
 date: {}
-tags: {}
+tags: [ {} ]
 uuid: {}
 layout: default
 category: blog
 ---
-{}""".format(note.title, note.created.strftime('%Y-%m-%d %H:%M:%S +0000'), ' '.join([t.title for t in note.tags()]), note.id, note.text))
+{}""".format(note.title, note.created.strftime('%Y-%m-%d %H:%M:%S +0000'), ', '.join([t.title for t in note.tags()]), note.id, note.text))
 
             # Images to copy
             for image in note.images():
